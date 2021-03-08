@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+
+# data files
+*.dat
+*.mkv
+*.mp4
