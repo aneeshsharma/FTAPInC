@@ -61,5 +61,3 @@ dkms.conf
 *.zip
 
 # Compiled
-client
-server
