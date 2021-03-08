@@ -57,7 +57,7 @@ int main()
     while (1)
     {
         int len = recv(conn_socket, buffer, BUFFER_SIZE, 0);
-        printf("%s\n", buffer);
+        printf("Message received: %s\n", buffer);
         if (strcmp(buffer, "Bye") == 0)
         {
             break;
@@ -65,6 +65,7 @@ int main()
 
         if (strcmp(buffer, "GivemeyourVideo") == 0)
         {
+            printf("Staring file transfer....\n");
             FILE *file = fopen("video.mkv", "rb");
             fseek(file, 0L, SEEK_END);
             int size = ftell(file);

@@ -57,7 +57,7 @@ int main()
             int total = 0;
             FILE *file = fopen("received.mkv", "wb");
             FILE *plot = fopen("plot.dat", "w");
-            FILE *plotter = popen("gnuplot > /dev/null", "w");
+            FILE *plotter = popen("gnuplot -persistent > /dev/null", "w");
 
             struct timeval prev_time, curr_time, start_time;
 
@@ -91,6 +91,9 @@ int main()
                     fflush(plot);
 
                     fprintf(plotter, "set title \"Transfer Speed\"\n");
+                    fprintf(plotter, "set xlabel \"Time in seconds\"\n");
+                    fprintf(plotter, "set ylabel \"Speed in KB/s\"\n");
+                    fprintf(plotter, "set xrange [%3.3f:%3.3f]\n", c_time - 5, c_time + 0.5);
                     fprintf(plotter, "plot \"plot.dat\" with lines\n");
                     fflush(plotter);
                 }
@@ -100,6 +103,7 @@ int main()
             }
             fclose(file);
             fclose(plot);
+            fclose(plotter);
             printf("\n");
             fflush(stdout);
             continue;
@@ -107,7 +111,7 @@ int main()
 
         int len = recv(sock_fd, buffer, BUFFER_SIZE, 0);
         buffer[len] = 0;
-        printf("%s\n", buffer);
+        printf("Message Received: %s\n", buffer);
     }
 
     close(sock_fd);
