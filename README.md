@@ -8,6 +8,7 @@ To use this program make sure you have the following packages -
 
 -   `gcc` - The GNU Compiler Collection
 -   `gnuplot` - A simple graph plotting utility
+-   `make` - The make utility
 
 ## Usage
 
