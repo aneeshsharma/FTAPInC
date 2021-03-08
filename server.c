@@ -65,7 +65,7 @@ int main()
 
         if (strcmp(buffer, "GivemeyourVideo") == 0)
         {
-            FILE *file = fopen("file.txt", "rb");
+            FILE *file = fopen("video.mkv", "rb");
             fseek(file, 0L, SEEK_END);
             int size = ftell(file);
             fseek(file, 0, SEEK_SET);
@@ -82,13 +82,13 @@ int main()
 
                 int sent = send(conn_socket, chunk, chunk_size, 0);
                 total += sent;
-                printf("Sent: %d\tTotal : %d\r", sent, total);
+                printf("Sent: %d\tTotal : %d KB\r", sent, total / 1000);
                 fflush(stdout);
                 fseek(file, sent - r, SEEK_CUR);
-                sleep(1);
             }
             fclose(file);
             printf("\n");
+            fflush(stdout);
             continue;
         }
 
