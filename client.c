@@ -7,10 +7,21 @@
 #include <pthread.h>
 #include <sys/time.h>
 
+#include "fileTransfer.c"
+
 #define PORT 5000
 #define BUFFER_SIZE 1024
 #define CHUNK_SIZE 512
 #define TIME_RANGE 2
+#define REQ_SIZE 50
+
+void listdir(int sockfd)
+{
+    char buffer[BUFFER_SIZE];
+    int l = recv(sockfd, buffer, BUFFER_SIZE, 0);
+    printf("\n-------------\n");
+    printf("Files on Server - \n%s\n", buffer);
+}
 
 int main()
 {
@@ -18,7 +29,8 @@ int main()
     struct sockaddr_in server_address;
     char buffer[1024] = {0};
 
-    char input[100];
+    char request[REQ_SIZE];
+    char name[REQ_SIZE], password[REQ_SIZE];
 
     if ((sock_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -41,78 +53,56 @@ int main()
         return -1;
     }
 
+    strcpy(request, "START");
+    send(sock_fd, request, REQ_SIZE, 0);
+
+    printf("Username : ");
+    scanf("%s", name);
+    printf("Password : ");
+    scanf("%s", password);
+
+    send(sock_fd, name, REQ_SIZE, 0);
+    send(sock_fd, password, REQ_SIZE, 0);
+
+    recv_len = recv(sock_fd, request, REQ_SIZE, 0);
+    if (strcmp(request, "DONE") != 0)
+    {
+        printf("Incorrect password\n");
+        close(sock_fd);
+        return -1;
+    }
+
     while (1)
     {
-        scanf("%s%*c", input);
-        send(sock_fd, input, BUFFER_SIZE, 0);
+        scanf("%s%*c", request);
+        send(sock_fd, request, REQ_SIZE, 0);
 
-        if (strcmp(input, "Bye") == 0)
+        if (strcmp(request, "QUIT") == 0)
             break;
 
-        if (strcmp(input, "GivemeyourVideo") == 0)
+        if (strcmp(request, "GetFile") == 0)
         {
-            int r = recv(sock_fd, buffer, 16, 0);
-            int size;
-            sscanf(buffer, "%d", &size);
-            printf("Size : %d\n", size);
-            int total = 0;
-            FILE *file = fopen("recv.bin", "wb");
-            FILE *plot = fopen("plot.dat", "w");
-            FILE *plotter = popen("gnuplot -persistent > /dev/null", "w");
-
-            struct timeval prev_time, curr_time, start_time;
-
-            gettimeofday(&prev_time, NULL);
-            gettimeofday(&start_time, NULL);
-            float speed = 0;
-            int sample = 0;
-            while (total < size)
-            {
-                int chunk_size = size - total < CHUNK_SIZE ? size - total : CHUNK_SIZE;
-                r = recv(sock_fd, buffer, chunk_size, 0);
-                total += r;
-                fwrite(buffer, sizeof(char), r, file);
-                gettimeofday(&curr_time, NULL);
-
-                int seconds = curr_time.tv_sec - prev_time.tv_sec;
-                int usec = curr_time.tv_usec - prev_time.tv_usec;
-
-                float time = seconds + ((float)usec) / 1000000;
-                float c_time = (curr_time.tv_sec - start_time.tv_sec) + (float)(curr_time.tv_usec - start_time.tv_usec) / 1000000;
-
-                sample += r;
-
-                if (time >= 0.1)
-                {
-                    speed = sample / (time * 1000);
-                    prev_time.tv_sec = curr_time.tv_sec;
-                    prev_time.tv_usec = curr_time.tv_usec;
-                    sample = 0;
-                    fprintf(plot, "%f %f\n", c_time, speed);
-                    fflush(plot);
-
-                    fprintf(plotter, "set title \"Transfer Speed\"\n");
-                    fprintf(plotter, "set xlabel \"Time in seconds\"\n");
-                    fprintf(plotter, "set ylabel \"Speed in KB/s\"\n");
-                    fprintf(plotter, "set xrange [%3.3f:%3.3f]\n", c_time - TIME_RANGE, c_time);
-                    fprintf(plotter, "plot \"plot.dat\" with lines\n");
-                    fflush(plotter);
-                }
-
-                printf("Packet: %4d bytes | Total: %9d KB | Speed: %6.2f KB/s\r", r, total / 1000, speed);
-                fflush(stdout);
-            }
-            fclose(file);
-            fclose(plot);
-            fclose(plotter);
-            printf("\n");
-            fflush(stdout);
-            continue;
+            scanf("%s", request);
+            send(sock_fd, request, REQ_SIZE, 0);
+            receiveFile(sock_fd, request);
         }
 
-        int len = recv(sock_fd, buffer, BUFFER_SIZE, 0);
-        buffer[len] = 0;
-        printf("Message Received: %s\n", buffer);
+        if (strcmp(request, "ListDir") == 0)
+        {
+            listdir(sock_fd);
+        }
+
+        if (strcmp(request, "StoreFile") == 0)
+        {
+            scanf("%s", request);
+            send(sock_fd, request, REQ_SIZE, 0);
+            sendFile(sock_fd, request);
+        }
+        if (strcmp(request, "CreateFile") == 0)
+        {
+            scanf("%s", request);
+            send(sock_fd, request, REQ_SIZE, 0);
+        }
     }
 
     close(sock_fd);

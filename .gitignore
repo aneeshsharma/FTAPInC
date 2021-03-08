@@ -57,3 +57,9 @@ dkms.conf
 *.mkv
 *.mp4
 *.bin
+
+*.zip
+
+# Compiled
+client
+server
