@@ -10,6 +10,7 @@
 #define PORT 5000
 #define BUFFER_SIZE 1024
 #define CHUNK_SIZE 512
+#define TIME_RANGE 10
 
 int main()
 {
@@ -93,12 +94,12 @@ int main()
                     fprintf(plotter, "set title \"Transfer Speed\"\n");
                     fprintf(plotter, "set xlabel \"Time in seconds\"\n");
                     fprintf(plotter, "set ylabel \"Speed in KB/s\"\n");
-                    fprintf(plotter, "set xrange [%3.3f:%3.3f]\n", c_time - 5, c_time + 0.5);
+                    fprintf(plotter, "set xrange [%3.3f:%3.3f]\n", c_time - TIME_RANGE, c_time);
                     fprintf(plotter, "plot \"plot.dat\" with lines\n");
                     fflush(plotter);
                 }
 
-                printf("Packet: %4d bytes | Total: %9d KB | Speed: %6.2f KB/s | u: %d\r", r, total / 1000, speed, usec);
+                printf("Packet: %4d bytes | Total: %9d KB | Speed: %6.2f KB/s\r", r, total / 1000, speed);
                 fflush(stdout);
             }
             fclose(file);

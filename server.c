@@ -70,7 +70,7 @@ int main()
             fseek(file, 0L, SEEK_END);
             int size = ftell(file);
             fseek(file, 0, SEEK_SET);
-            printf("Size : %d\n", size);
+            printf("Size : %d Bytes\n", size);
 
             char chunk[CHUNK_SIZE];
             sprintf(buffer, "%016d", size);
@@ -83,7 +83,7 @@ int main()
 
                 int sent = send(conn_socket, chunk, chunk_size, 0);
                 total += sent;
-                printf("Sent: %d\tTotal : %d KB\r", sent, total / 1000);
+                printf("Sent: %d B\tTotal : %d KB\r", sent, total / 1000);
                 fflush(stdout);
                 fseek(file, sent - r, SEEK_CUR);
             }
