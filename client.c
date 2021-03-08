@@ -10,7 +10,7 @@
 #define PORT 5000
 #define BUFFER_SIZE 1024
 #define CHUNK_SIZE 512
-#define TIME_RANGE 10
+#define TIME_RANGE 2
 
 int main()
 {
@@ -56,7 +56,7 @@ int main()
             sscanf(buffer, "%d", &size);
             printf("Size : %d\n", size);
             int total = 0;
-            FILE *file = fopen("received.mkv", "wb");
+            FILE *file = fopen("recv.bin", "wb");
             FILE *plot = fopen("plot.dat", "w");
             FILE *plotter = popen("gnuplot -persistent > /dev/null", "w");
 

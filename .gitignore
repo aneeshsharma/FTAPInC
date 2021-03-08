@@ -56,3 +56,4 @@ dkms.conf
 *.dat
 *.mkv
 *.mp4
+*.bin

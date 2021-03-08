@@ -66,7 +66,7 @@ int main()
         if (strcmp(buffer, "GivemeyourVideo") == 0)
         {
             printf("Staring file transfer....\n");
-            FILE *file = fopen("video.mkv", "rb");
+            FILE *file = fopen("send.bin", "rb");
             fseek(file, 0L, SEEK_END);
             int size = ftell(file);
             fseek(file, 0, SEEK_SET);
