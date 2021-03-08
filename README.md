@@ -67,3 +67,14 @@ The client application first asks you to enter the username and password for aut
 -   `GetFile filename` - Download file with the name `filename` from the server
 -   `ListDir` - List all files currently on the server
 -   `QUIT` - Quit the application and disconnect from the server
+
+## File Storeage on the Server
+
+The server stores all the files in the directory `files/` inside the current working directory of the server.
+
+For example, a file uploaded with the name as `filename.txt` will be stored on the server at the location `files/filename.txt`
+
+Also, if you use `GetFile filename.txt` on the client application, the file at the location `files/filename.txt` would be downloaded.
+
+This is done to make sure that all files uploaded to the server are organised into one folder instead of cluttering the working directory.
+But this is abstracted from the client and the user doesn't need to know about it.
