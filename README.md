@@ -1,6 +1,14 @@
-# FileTransferInC
+# FTAP - File Transfer Application Program
 
-A basic file transfer implementation in C. Uses TCP sockets to transfer a 50MB file when asked to.
+A basic file server implementation in C.
+
+## Features
+
+-   A simple user authentication feature
+-   Create a File on server
+-   Upload file to server
+-   Download file from server
+-   List all files on server
 
 ## Preqrequisite
 
